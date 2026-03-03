@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BookStore - Microservice System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        h1 { color: #333; }
+        .nav { background: #333; padding: 15px; margin: -40px -40px 20px -40px; }
+        .nav a { color: white; text-decoration: none; margin-right: 20px; padding: 8px 15px; }
+        .nav a:hover { background: #555; border-radius: 4px; }
+        .card { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/books/">Books</a>
+        <a href="/customers/">Customers</a>
+        <a href="/orders/">Orders</a>
+        <a href="/recommendations/">Recommendations</a>
+    </div>
+    <h1>📚 BookStore Microservice System</h1>
+    <div class="grid">
+        <div class="card">
+            <h3>📖 Book Management</h3>
+            <p>View and manage books in the catalog.</p>
+            <a href="/books/">View Books</a> | <a href="/books/add/">Add Book</a>
+        </div>
+        <div class="card">
+            <h3>👤 Customer Management</h3>
+            <p>Register and manage customers.</p>
+            <a href="/customers/">View Customers</a> | <a href="/customers/register/">Register</a>
+        </div>
+        <div class="card">
+            <h3>📦 Orders</h3>
+            <p>View all orders.</p>
+            <a href="/orders/">View Orders</a>
+        </div>
+        <div class="card">
+            <h3>⭐ Recommendations</h3>
+            <p>AI-powered book recommendations.</p>
+            <a href="/recommendations/">View Recommendations</a>
+        </div>
+    </div>
+</body>
+</html>

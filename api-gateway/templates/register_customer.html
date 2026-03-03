@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Register Customer - BookStore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+
+        .nav {
+            background: #333;
+            padding: 15px;
+            margin: -40px -40px 20px -40px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 15px;
+        }
+
+        .nav a:hover {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 16px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/books/">Books</a>
+        <a href="/customers/">Customers</a>
+        <a href="/orders/">Orders</a>
+    </div>
+    <h2>👤 Register New Customer</h2>
+    <p><em>Note: A cart will be automatically created for the new customer.</em></p>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Name:</label>
+        <input type="text" name="name" required>
+        <label>Email:</label>
+        <input type="email" name="email" required>
+        <button type="submit">Register Customer</button>
+    </form>
+    <br>
+    <a href="/customers/">← Back to Customer List</a>
+</body>
+
+</html>

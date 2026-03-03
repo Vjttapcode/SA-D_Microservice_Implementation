@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Reviews - BookStore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+
+        .nav {
+            background: #333;
+            padding: 15px;
+            margin: -40px -40px 20px -40px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 15px;
+        }
+
+        .nav a:hover {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stars {
+            color: gold;
+            font-size: 20px;
+        }
+
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .avg {
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/books/">Books</a>
+        <a href="/customers/">Customers</a>
+        <a href="/orders/">Orders</a>
+    </div>
+    <h2>⭐ Reviews for Book {{ book_id }}</h2>
+    {% if reviews_data.average_rating %}
+    <p class="avg">Average Rating: {{ reviews_data.average_rating|floatformat:1 }} / 5</p>
+    {% endif %}
+    <a href="/reviews/book/{{ book_id }}/add/" class="btn">+ Add Review</a>
+    <br><br>
+    {% for review in reviews_data.reviews %}
+    <div class="card">
+        <div class="stars">
+            {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %} {% endfor %} </div>
+                <p><strong>Customer {{ review.customer_id }}</strong></p>
+                <p>{{ review.comment }}</p>
+        </div>
+        {% empty %}
+        <div class="card">No reviews yet for this book.</div>
+        {% endfor %}
+        <br>
+        <a href="/books/">← Back to Books</a>
+</body>
+
+</html>

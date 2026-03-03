@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Books - BookStore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+
+        .nav {
+            background: #333;
+            padding: 15px;
+            margin: -40px -40px 20px -40px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 15px;
+        }
+
+        .nav a:hover {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #333;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/books/">Books</a>
+        <a href="/customers/">Customers</a>
+        <a href="/orders/">Orders</a>
+        <a href="/recommendations/">Recommendations</a>
+    </div>
+    <h2>📖 Book List</h2>
+    <a href="/books/add/" class="btn">+ Add New Book</a>
+    <br><br>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
+        </tr>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.id }}</td>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>${{ book.price }}</td>
+            <td>{{ book.stock }}</td>
+            <td><a href="/reviews/book/{{ book.id }}/">Reviews</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No books found.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

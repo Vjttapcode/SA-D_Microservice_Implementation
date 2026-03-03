@@ -1,0 +1,112 @@
+services:
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "8001:8000"
+    networks:
+      - bookstore-network
+
+  staff-service:
+    build: ./staff-service
+    ports:
+      - "8002:8000"
+    networks:
+      - bookstore-network
+
+  manager-service:
+    build: ./manager-service
+    ports:
+      - "8003:8000"
+    networks:
+      - bookstore-network
+
+  catalog-service:
+    build: ./catalog-service
+    ports:
+      - "8004:8000"
+    networks:
+      - bookstore-network
+
+  book-service:
+    build: ./book-service
+    ports:
+      - "8005:8000"
+    networks:
+      - bookstore-network
+
+  cart-service:
+    build: ./cart-service
+    ports:
+      - "8006:8000"
+    depends_on:
+      - book-service
+    networks:
+      - bookstore-network
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "8007:8000"
+    depends_on:
+      - cart-service
+      - book-service
+      - pay-service
+      - ship-service
+    networks:
+      - bookstore-network
+
+  pay-service:
+    build: ./pay-service
+    ports:
+      - "8008:8000"
+    networks:
+      - bookstore-network
+
+  ship-service:
+    build: ./ship-service
+    ports:
+      - "8009:8000"
+    networks:
+      - bookstore-network
+
+  comment-rate-service:
+    build: ./comment-rate-service
+    ports:
+      - "8010:8000"
+    depends_on:
+      - book-service
+    networks:
+      - bookstore-network
+
+  recommender-ai-service:
+    build: ./recommender-ai-service
+    ports:
+      - "8011:8000"
+    depends_on:
+      - book-service
+      - comment-rate-service
+    networks:
+      - bookstore-network
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - customer-service
+      - staff-service
+      - manager-service
+      - catalog-service
+      - book-service
+      - cart-service
+      - order-service
+      - pay-service
+      - ship-service
+      - comment-rate-service
+      - recommender-ai-service
+    networks:
+      - bookstore-network
+
+networks:
+  bookstore-network:
+    driver: bridge

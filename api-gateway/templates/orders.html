@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Orders - BookStore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+
+        .nav {
+            background: #333;
+            padding: 15px;
+            margin: -40px -40px 20px -40px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 15px;
+        }
+
+        .nav a:hover {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #333;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .status-confirmed {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-shipped {
+            color: blue;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/books/">Books</a>
+        <a href="/customers/">Customers</a>
+        <a href="/orders/">Orders</a>
+    </div>
+    <h2>📦 Orders</h2>
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer ID</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Payment</th>
+            <th>Created</th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.customer_id }}</td>
+            <td>${{ order.total_amount }}</td>
+            <td class="status-{{ order.status }}">{{ order.status }}</td>
+            <td>{{ order.payment_method }}</td>
+            <td>{{ order.created_at }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No orders found.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
