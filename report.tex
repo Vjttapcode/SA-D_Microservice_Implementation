@@ -1,0 +1,1012 @@
+\documentclass[12pt,a4paper]{article}
+
+% ===== PACKAGES =====
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese,english]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds,
+                decorations.pathmorphing, decorations.markings}
+\usepackage{mdframed}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\usepackage{pgfornament}  % for corner ornaments (optional, graceful fallback)
+
+% ===== PAGE GEOMETRY =====
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3cm,
+  right=2cm,
+}
+
+% ===== COLORS =====
+\definecolor{primaryblue}{RGB}{0, 84, 166}
+\definecolor{secondaryblue}{RGB}{70, 130, 180}
+\definecolor{lightgray}{RGB}{245, 245, 245}
+\definecolor{codebg}{RGB}{248, 248, 248}
+\definecolor{codeframe}{RGB}{180, 180, 180}
+\definecolor{keywordcolor}{RGB}{0, 100, 200}
+\definecolor{stringcolor}{RGB}{160, 0, 0}
+\definecolor{commentcolor}{RGB}{100, 100, 100}
+\definecolor{successgreen}{RGB}{0, 128, 0}
+
+% ===== HYPERREF SETUP =====
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primaryblue,
+  urlcolor=secondaryblue,
+  citecolor=primaryblue,
+  pdftitle={Assignment 05 - BookStore Microservice System},
+  pdfauthor={SA\&D 2026},
+}
+
+% ===== LISTINGS SETUP =====
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{commentcolor}\itshape,
+  frame=single,
+  rulecolor=\color{codeframe},
+  keepspaces=true,
+  keywordstyle=\color{keywordcolor}\bfseries,
+  numbers=left,
+  numbersep=8pt,
+  numberstyle=\tiny\color{gray},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stepnumber=1,
+  stringstyle=\color{stringcolor},
+  tabsize=4,
+  xleftmargin=15pt,
+}
+
+\lstdefinelanguage{YAML}{
+  keywords={true,false,null,yes,no},
+  keywordstyle=\color{keywordcolor}\bfseries,
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{commentcolor}\itshape,
+  stringstyle=\color{stringcolor},
+  morestring=[b]',
+  morestring=[b]",
+}
+
+% ===== HEADER / FOOTER =====
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{primaryblue}{\textbf{SA\&D 2026 -- Assignment 05}}}
+\fancyhead[R]{\small\textcolor{gray}{BookStore Microservice System}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ===== SECTION FORMATTING =====
+\titleformat{\section}
+  {\Large\bfseries\color{primaryblue}}
+  {\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}
+  {\large\bfseries\color{secondaryblue}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}
+  {\thesubsubsection}{1em}{}
+
+% ===== TCOLORBOX STYLES =====
+\tcbset{
+  servicebox/.style={
+    enhanced,
+    colback=lightgray,
+    colframe=primaryblue,
+    fonttitle=\bfseries,
+    attach boxed title to top left={yshift=-2mm, xshift=5mm},
+    boxed title style={colback=primaryblue, colframe=primaryblue},
+    breakable,
+  }
+}
+
+% ===== DOCUMENT START =====
+\begin{document}
+
+% ===== TITLE PAGE (PTIT style) =====
+\begin{titlepage}
+\centering
+\thispagestyle{empty}
+
+% --- Outer decorative border ---
+\begin{tikzpicture}[remember picture, overlay]
+  % Thick outer frame
+  \draw[line width=3pt, black!80]
+    ([xshift=1.2cm, yshift=-1.2cm]current page.north west)
+    rectangle
+    ([xshift=-1.2cm, yshift=1.2cm]current page.south east);
+  % Thin inner frame
+  \draw[line width=1pt, black!60]
+    ([xshift=1.45cm, yshift=-1.45cm]current page.north west)
+    rectangle
+    ([xshift=-1.45cm, yshift=1.45cm]current page.south east);
+
+  % ---- Corner ornaments (TikZ-drawn rosettes) ----
+  \foreach \cx/\cy in {
+      {[xshift=1.2cm,  yshift=-1.2cm]current page.north west} /,
+      {[xshift=-1.2cm, yshift=-1.2cm]current page.north east} /,
+      {[xshift=1.2cm,  yshift=1.2cm]current page.south west} /,
+      {[xshift=-1.2cm, yshift=1.2cm]current page.south east} /
+  }{} % placeholder — real ornaments drawn below
+
+  % Top-left corner flower
+  \begin{scope}[shift={([xshift=1.2cm,yshift=-1.2cm]current page.north west)}]
+    \foreach \a in {0,45,...,315}
+      \fill[black!70, rotate=\a] (0.18,0) ellipse (0.18 and 0.07);
+    \fill[black!80] (0,0) circle (0.1);
+  \end{scope}
+  % Top-right corner flower
+  \begin{scope}[shift={([xshift=-1.2cm,yshift=-1.2cm]current page.north east)}]
+    \foreach \a in {0,45,...,315}
+      \fill[black!70, rotate=\a] (0.18,0) ellipse (0.18 and 0.07);
+    \fill[black!80] (0,0) circle (0.1);
+  \end{scope}
+  % Bottom-left corner flower
+  \begin{scope}[shift={([xshift=1.2cm,yshift=1.2cm]current page.south west)}]
+    \foreach \a in {0,45,...,315}
+      \fill[black!70, rotate=\a] (0.18,0) ellipse (0.18 and 0.07);
+    \fill[black!80] (0,0) circle (0.1);
+  \end{scope}
+  % Bottom-right corner flower
+  \begin{scope}[shift={([xshift=-1.2cm,yshift=1.2cm]current page.south east)}]
+    \foreach \a in {0,45,...,315}
+      \fill[black!70, rotate=\a] (0.18,0) ellipse (0.18 and 0.07);
+    \fill[black!80] (0,0) circle (0.1);
+  \end{scope}
+\end{tikzpicture}
+
+% --- Page content ---
+\vspace*{0.5cm}
+
+{\large\bfseries HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG}\\[0.4cm]
+{\normalsize\bfseries KHOA CÔNG NGHỆ THÔNG TIN 1}\\[0.6cm]
+
+\rule{0.25\textwidth}{0.8pt}\\[1.2cm]
+
+% --- PTIT Logo (TikZ) ---
+\begin{tikzpicture}[scale=1.3]
+  % Outer thin circle
+  \draw[line width=1.2pt, black!80] (0,0) circle (1.5cm);
+  % Red filled arc (left side ~270 deg)
+  \fill[red!80!black] (0,0) -- (90:1.42cm) arc[start angle=90, end angle=-200, radius=1.42cm] -- cycle;
+  % White arc gap (right side)
+  \fill[white] (0,0) -- (-200:1.42cm) arc[start angle=-200, end angle=90, radius=1.42cm] -- cycle;
+  % Inner circle white cutout
+  \fill[white] (0,0) circle (0.78cm);
+  % Inner red ring
+  \fill[red!75!black] (0,0) circle (0.78cm);
+  \fill[white] (0,0) circle (0.62cm);
+  % "PT" text in red circle
+  \node[font=\bfseries\large, text=red!70!black] at (-0.15, 0.0) {PT};
+  % "i" with yellow dot
+  \node[font=\bfseries\large, text=black] at (0.38, 0.0) {i};
+  \fill[yellow!80!orange] (0.38, 0.38) circle (0.08cm);
+  % "T" underlined in red
+  \node[font=\bfseries\large, text=red!70!black] at (0.65, 0.0) {T};
+  \draw[red!70!black, line width=1.2pt] (-0.12,-0.32) -- (0.82,-0.32);
+\end{tikzpicture}
+
+\vspace{1.0cm}
+
+{\LARGE\bfseries ASSIGNMENT 05}\\[0.8cm]
+
+{\large\bfseries BỘ MÔN: KIẾN TRÚC VÀ THIẾT KẾ PHẦN MỀM}\\[1.5cm]
+
+% --- Student info table ---
+\begin{tikzpicture}
+  \node[draw=black, line width=0.8pt, inner sep=0pt] (tbl) {%
+    \begin{tabular}{|p{5.5cm}|p{5.5cm}|}
+      \hline
+      \centering Sinh viên thực hiện & Đào Ngọc Đức \\ \hline
+      \centering Mã sinh viên        & B22DCCN221   \\ \hline
+      \centering Lớp                 & D22CNPM03    \\ \hline
+      \centering Nhóm lớp            & 03           \\ \hline
+    \end{tabular}%
+  };
+  % small cross mark top-left (like the image)
+  \node[anchor=north east] at (tbl.north west) {$\boldsymbol{+}$};
+  % small square bottom-right
+  \draw[line width=0.8pt] ([xshift=2pt,yshift=-2pt]tbl.south east)
+        rectangle ++(0.35cm,-0.35cm);
+\end{tikzpicture}
+
+\vfill
+{\small \today}
+
+\end{titlepage}
+
+% ===== TABLE OF CONTENTS =====
+\tableofcontents
+\newpage
+
+% =============================================================
+\section{Giới Thiệu Đề Tài}
+% =============================================================
+
+\subsection{Bối Cảnh và Mục Tiêu}
+
+Assignment 05 yêu cầu sinh viên thực hiện việc \textbf{phân rã kiến trúc Monolithic} của hệ thống BookStore sang kiến trúc \textbf{Microservices}, đồng thời triển khai và kiểm thử toàn bộ hệ thống bằng Docker Compose.
+
+Mục tiêu cụ thể của assignment:
+\begin{itemize}[leftmargin=1.5cm]
+  \item Phân tích và xác định các \textit{bounded contexts} trong hệ thống BookStore
+  \item Thiết kế và cài đặt từng microservice độc lập sử dụng Django REST Framework
+  \item Định nghĩa giao tiếp giữa các service (inter-service communication) thông qua REST API
+  \item Đóng gói và triển khai toàn bộ hệ thống bằng Docker \& Docker Compose
+  \item Cài đặt API Gateway làm điểm vào duy nhất cho hệ thống
+  \item Xây dựng Recommender AI Service đề xuất sách dựa trên đánh giá người dùng
+\end{itemize}
+
+\subsection{Công Nghệ Sử Dụng}
+
+\begin{table}[H]
+  \centering
+  \caption{Công nghệ và framework sử dụng trong hệ thống}
+  \begin{tabularx}{\textwidth}{lX}
+    \toprule
+    \textbf{Thành Phần} & \textbf{Công Nghệ / Phiên Bản} \\
+    \midrule
+    Ngôn ngữ lập trình   & Python 3.11 \\
+    Web Framework        & Django 4.x + Django REST Framework (DRF) \\
+    Cơ sở dữ liệu        & SQLite (độc lập mỗi service) \\
+    Container            & Docker + Docker Compose \\
+    Giao tiếp services   & REST API (HTTP đồng bộ) \\
+    API Gateway          & Django (Reverse Proxy + Web UI) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% =============================================================
+\section{Kiến Trúc Hệ Thống}
+% =============================================================
+
+\subsection{Tổng Quan Kiến Trúc Microservices}
+
+Hệ thống BookStore được phân rã thành \textbf{12 microservices độc lập}, mỗi service chịu trách nhiệm cho một miền nghiệp vụ cụ thể và được triển khai như một container Docker riêng biệt.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    service/.style={
+      rectangle, rounded corners=4pt,
+      draw=primaryblue, fill=primaryblue!10,
+      minimum width=2.8cm, minimum height=0.8cm,
+      font=\footnotesize\bfseries, align=center,
+    },
+    gateway/.style={
+      rectangle, rounded corners=6pt,
+      draw=primaryblue, fill=primaryblue,
+      text=white,
+      minimum width=4cm, minimum height=1cm,
+      font=\small\bfseries, align=center,
+    },
+    client/.style={
+      rectangle, rounded corners=4pt,
+      draw=gray, fill=gray!10,
+      minimum width=3cm, minimum height=0.8cm,
+      font=\small\bfseries, align=center,
+    },
+    arrow/.style={-Stealth, thick, primaryblue},
+    darrow/.style={-Stealth, thick, secondaryblue, dashed},
+  ]
+    % Client
+    \node[client] (client) at (0, 5.5) {Browser / Client};
+
+    % API Gateway
+    \node[gateway] (gateway) at (0, 4) {API Gateway\\(Port 8000)};
+
+    % Row 1
+    \node[service] (cust) at (-6, 2) {customer-service\\:8001};
+    \node[service] (staff) at (-3, 2) {staff-service\\:8002};
+    \node[service] (mgr) at (0, 2) {manager-service\\:8003};
+    \node[service] (cat) at (3, 2) {catalog-service\\:8004};
+    \node[service] (book) at (6, 2) {book-service\\:8005};
+
+    % Row 2
+    \node[service] (cart) at (-5.5, 0) {cart-service\\:8006};
+    \node[service] (order) at (-2, 0) {order-service\\:8007};
+    \node[service] (pay) at (1.5, 0) {pay-service\\:8008};
+    \node[service] (ship) at (4.5, 0) {ship-service\\:8009};
+
+    % Row 3
+    \node[service] (cmt) at (-2, -2) {comment-rate\\:8010};
+    \node[service] (rec) at (2.5, -2) {recommender-ai\\:8011};
+
+    % Arrows from client
+    \draw[arrow] (client) -- (gateway);
+
+    % Arrows from gateway
+    \draw[arrow] (gateway) -- (cust);
+    \draw[arrow] (gateway) -- (staff);
+    \draw[arrow] (gateway) -- (mgr);
+    \draw[arrow] (gateway) -- (cat);
+    \draw[arrow] (gateway) -- (book);
+    \draw[arrow] (gateway) -- (cart);
+    \draw[arrow] (gateway) -- (order);
+    \draw[arrow] (gateway) -- (cmt);
+    \draw[arrow] (gateway) -- (rec);
+
+    % Inter-service arrows
+    \draw[darrow] (cust) -- (cart) node[midway, left, font=\tiny] {POST /carts/};
+    \draw[darrow] (cart) -- (book) node[midway, above, font=\tiny] {GET /books/};
+    \draw[darrow] (order) -- (cart) node[midway, above, font=\tiny] {GET /carts/};
+    \draw[darrow] (order) -- (pay) node[midway, above, font=\tiny] {POST};
+    \draw[darrow] (order) -- (ship) node[midway, above, font=\tiny] {POST};
+    \draw[darrow] (cmt) -- (book) node[midway, below, font=\tiny] {};
+    \draw[darrow] (rec) -- (cmt) node[midway, below, font=\tiny] {GET /reviews/};
+    \draw[darrow] (rec) -- (book) node[midway, right, font=\tiny] {};
+
+  \end{tikzpicture}
+  \caption{Kiến trúc tổng thể hệ thống BookStore Microservices}
+\end{figure}
+
+\subsection{Danh Sách Các Microservices}
+
+\begin{longtable}{lclX}
+  \caption{Danh sách đầy đủ các microservices trong hệ thống} \\
+  \toprule
+  \textbf{STT} & \textbf{Service} & \textbf{Port} & \textbf{Chức Năng} \\
+  \midrule
+  \endfirsthead
+  \multicolumn{4}{c}{\tablename\ \thetable{}. (tiếp theo)} \\
+  \toprule
+  \textbf{STT} & \textbf{Service} & \textbf{Port} & \textbf{Chức Năng} \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+  1  & \texttt{api-gateway}          & 8000 & Web UI, điểm vào duy nhất, định tuyến tới tất cả services \\[0.3cm]
+  2  & \texttt{customer-service}     & 8001 & Quản lý khách hàng, tự động tạo giỏ hàng khi đăng ký \\[0.3cm]
+  3  & \texttt{staff-service}        & 8002 & Quản lý nhân viên (CRUD) \\[0.3cm]
+  4  & \texttt{manager-service}      & 8003 & Quản lý quản lý cửa hàng (CRUD) \\[0.3cm]
+  5  & \texttt{catalog-service}      & 8004 & Quản lý danh mục sách (Category) \\[0.3cm]
+  6  & \texttt{book-service}         & 8005 & Quản lý sách (CRUD): tiêu đề, tác giả, giá, tồn kho \\[0.3cm]
+  7  & \texttt{cart-service}         & 8006 & Quản lý giỏ hàng, xác thực sách qua book-service \\[0.3cm]
+  8  & \texttt{order-service}        & 8007 & Tạo đơn hàng, kích hoạt thanh toán và giao hàng \\[0.3cm]
+  9  & \texttt{pay-service}          & 8008 & Xử lý thanh toán \\[0.3cm]
+  10 & \texttt{ship-service}         & 8009 & Xử lý giao hàng \\[0.3cm]
+  11 & \texttt{comment-rate-service} & 8010 & Đánh giá và bình luận sách \\[0.3cm]
+  12 & \texttt{recommender-ai-service} & 8011 & Gợi ý sách dựa trên đánh giá người dùng (AI/ML) \\[0.3cm]
+\end{longtable}
+
+\subsection{Giao Tiếp Giữa Các Services (Inter-Service Communication)}
+
+\begin{table}[H]
+  \centering
+  \caption{Sơ đồ giao tiếp giữa các microservices}
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    \textbf{Service Gọi} & \textbf{Service Được Gọi} & \textbf{Endpoint \& Mục Đích} \\
+    \midrule
+    customer-service     & cart-service           & \texttt{POST /api/carts/} -- Tự tạo giỏ hàng \\
+    cart-service         & book-service           & \texttt{GET /api/books/\{id\}/} -- Xác thực sách tồn tại \\
+    order-service        & cart-service           & \texttt{GET /api/carts/\{id\}/} -- Lấy items trong giỏ \\
+    order-service        & book-service           & \texttt{GET /api/books/\{id\}/} -- Lấy giá sách \\
+    order-service        & pay-service            & \texttt{POST /api/payments/} -- Kích hoạt thanh toán \\
+    order-service        & ship-service           & \texttt{POST /api/shipments/} -- Kích hoạt giao hàng \\
+    comment-rate-service & book-service           & \texttt{GET /api/books/\{id\}/} -- Xác thực sách \\
+    recommender-ai-service & comment-rate-service & \texttt{GET /api/reviews/top-rated/} -- Lấy sách top rating \\
+    recommender-ai-service & book-service         & \texttt{GET /api/books/\{id\}/} -- Lấy chi tiết sách \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% =============================================================
+\section{Cài Đặt và Triển Khai}
+% =============================================================
+
+\subsection{Cấu Trúc Thư Mục Dự Án}
+
+\begin{lstlisting}[language=bash, caption={Cấu trúc thư mục tổng thể dự án}]
+assign05/
+|-- api-gateway/              # API Gateway + Web UI
+|   |-- api_gateway/          # Django project config
+|   |-- gateway/              # Views, URLs (proxy logic)
+|   |-- templates/            # HTML templates (12 pages)
+|   |-- Dockerfile
+|   |-- requirements.txt
+|   `-- entrypoint.sh
+|-- book-service/             # Quan ly sach
+|-- cart-service/             # Quan ly gio hang
+|-- order-service/            # Quan ly don hang
+|-- pay-service/              # Xu ly thanh toan
+|-- ship-service/             # Xu ly giao hang
+|-- customer-service/         # Quan ly khach hang
+|-- staff-service/            # Quan ly nhan vien
+|-- manager-service/          # Quan ly quan ly
+|-- catalog-service/          # Danh muc sach
+|-- comment-rate-service/     # Danh gia sach
+|-- recommender-ai-service/   # Goi y sach
+`-- docker-compose.yml        # Dinh nghia toan bo he thong
+\end{lstlisting}
+
+\subsection{Cấu Trúc Mỗi Microservice}
+
+Mỗi microservice đều có cấu trúc chuẩn như sau:
+
+\begin{lstlisting}[language=bash, caption={Cấu trúc chuẩn mỗi microservice (ví dụ: book-service)}]
+book-service/
+|-- Dockerfile          # Container image definition
+|-- requirements.txt    # djangorestframework, requests
+|-- entrypoint.sh       # Migrate + start server
+|-- manage.py           # Django manager
+|-- book_service/       # Django project settings
+|   |-- settings.py
+|   |-- urls.py
+|   `-- wsgi.py
+`-- app/                # Django application
+    |-- models.py       # Data models (Book)
+    |-- serializers.py  # DRF serializers
+    |-- views.py        # API views (CRUD)
+    |-- urls.py         # URL routing
+    `-- admin.py
+\end{lstlisting}
+
+\subsection{Docker và Docker Compose}
+
+\subsubsection{Dockerfile Chuẩn}
+
+\begin{lstlisting}[language=Dockerfile, caption={Dockerfile chuẩn cho các microservice}]
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 8000
+
+ENTRYPOINT ["/entrypoint.sh"]
+\end{lstlisting}
+
+\subsubsection{Entrypoint Script}
+
+\begin{lstlisting}[language=bash, caption={entrypoint.sh -- chạy migrate và khởi động server}]
+#!/bin/bash
+set -e
+
+python manage.py makemigrations --noinput || true
+python manage.py migrate --noinput
+
+exec python manage.py runserver 0.0.0.0:8000
+\end{lstlisting}
+
+\subsubsection{Docker Compose Configuration}
+
+\begin{lstlisting}[language=YAML, caption={docker-compose.yml -- cấu hình toàn bộ hệ thống}]
+services:
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "8001:8000"
+    networks:
+      - bookstore-network
+
+  book-service:
+    build: ./book-service
+    ports:
+      - "8005:8000"
+    networks:
+      - bookstore-network
+
+  cart-service:
+    build: ./cart-service
+    ports:
+      - "8006:8000"
+    depends_on:
+      - book-service
+    networks:
+      - bookstore-network
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "8007:8000"
+    depends_on:
+      - cart-service
+      - book-service
+      - pay-service
+      - ship-service
+    networks:
+      - bookstore-network
+
+  recommender-ai-service:
+    build: ./recommender-ai-service
+    ports:
+      - "8011:8000"
+    depends_on:
+      - book-service
+      - comment-rate-service
+    networks:
+      - bookstore-network
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - customer-service
+      - staff-service
+      - manager-service
+      - catalog-service
+      - book-service
+      - cart-service
+      - order-service
+      - pay-service
+      - ship-service
+      - comment-rate-service
+      - recommender-ai-service
+    networks:
+      - bookstore-network
+
+networks:
+  bookstore-network:
+    driver: bridge
+\end{lstlisting}
+
+% =============================================================
+\section{Thiết Kế Chi Tiết Các Microservices}
+% =============================================================
+
+\subsection{Book Service (Port 8005)}
+
+Book Service quản lý toàn bộ thông tin sách trong hệ thống.
+
+\subsubsection{Data Model}
+
+\begin{lstlisting}[language=Python, caption={book-service/app/models.py}]
+from django.db import models
+
+class Book(models.Model):
+    title      = models.CharField(max_length=255)
+    author     = models.CharField(max_length=255)
+    price      = models.DecimalField(max_digits=10, decimal_places=2)
+    stock      = models.IntegerField(default=0)
+    isbn       = models.CharField(max_length=13, blank=True)
+    category_id = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+\end{lstlisting}
+
+\subsubsection{API Endpoints}
+
+\begin{table}[H]
+  \centering
+  \caption{API endpoints của Book Service}
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    \textbf{Method} & \textbf{Endpoint} & \textbf{Chức Năng} \\
+    \midrule
+    GET    & \texttt{/api/books/}       & Lấy danh sách tất cả sách \\
+    POST   & \texttt{/api/books/}       & Thêm sách mới \\
+    GET    & \texttt{/api/books/\{id\}/} & Lấy chi tiết một cuốn sách \\
+    PUT    & \texttt{/api/books/\{id\}/} & Cập nhật thông tin sách \\
+    DELETE & \texttt{/api/books/\{id\}/} & Xóa sách \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Customer Service (Port 8001)}
+
+Customer Service xử lý việc đăng ký khách hàng và tự động tạo giỏ hàng thông qua giao tiếp với Cart Service.
+
+\subsubsection{Luồng Xử Lý Đăng Ký Khách Hàng}
+
+\begin{lstlisting}[language=Python, caption={Tự động tạo giỏ hàng khi đăng ký -- customer-service}]
+class CustomerListCreate(APIView):
+    def post(self, request):
+        serializer = CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            customer = serializer.save()
+            # Goi sang cart-service de tu dong tao gio hang
+            try:
+                requests.post(
+                    f"{CART_SERVICE_URL}/api/carts/",
+                    json={"customer_id": customer.id}
+                )
+            except requests.exceptions.ConnectionError:
+                pass  # Cart service co the chua san sang
+            return Response(serializer.data,
+                          status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,
+                      status=status.HTTP_400_BAD_REQUEST)
+\end{lstlisting}
+
+\subsection{Order Service (Port 8007)}
+
+Order Service là service phức tạp nhất, điều phối việc tạo đơn hàng bằng cách giao tiếp với nhiều services khác.
+
+\subsubsection{Luồng Xử Lý Đặt Hàng}
+
+Khi khách hàng đặt hàng, luồng xử lý như sau:
+
+\begin{enumerate}[leftmargin=1.5cm]
+  \item Lấy danh sách items từ \texttt{cart-service} theo \texttt{customer\_id}
+  \item Tính tổng tiền bằng cách gọi \texttt{book-service} lấy giá từng sách
+  \item Tạo bản ghi \texttt{Order} và các \texttt{OrderItem} trong database
+  \item Kích hoạt thanh toán bằng cách gọi \texttt{POST /api/payments/} tới \texttt{pay-service}
+  \item Kích hoạt giao hàng bằng cách gọi \texttt{POST /api/shipments/} tới \texttt{ship-service}
+  \item Trả về thông tin đơn hàng đã tạo
+\end{enumerate}
+
+\begin{lstlisting}[language=Python, caption={Luồng tạo đơn hàng -- order-service/app/views.py}]
+CART_SERVICE_URL = "http://cart-service:8000"
+PAY_SERVICE_URL  = "http://pay-service:8000"
+SHIP_SERVICE_URL = "http://ship-service:8000"
+BOOK_SERVICE_URL = "http://book-service:8000"
+
+class OrderCreate(APIView):
+    def post(self, request):
+        customer_id      = request.data.get("customer_id")
+        shipping_address = request.data.get("shipping_address", "")
+        payment_method   = request.data.get("payment_method", "cash")
+
+        # 1. Lay gio hang tu cart-service
+        cart_items = []
+        r = requests.get(
+            f"{CART_SERVICE_URL}/api/carts/{customer_id}/")
+        if r.status_code == 200:
+            cart_items = r.json().get("items", [])
+
+        # 2. Tinh tong tien qua book-service
+        total = 0
+        for item in cart_items:
+            br = requests.get(
+                f"{BOOK_SERVICE_URL}/api/books/{item['book_id']}/")
+            if br.status_code == 200:
+                book_price = float(br.json().get("price", 0))
+                total += book_price * item["quantity"]
+
+        # 3. Tao don hang
+        order = Order.objects.create(
+            customer_id=customer_id,
+            total_amount=total,
+            shipping_address=shipping_address,
+            status='pending'
+        )
+
+        # 4. Kich hoat thanh toan
+        requests.post(f"{PAY_SERVICE_URL}/api/payments/",
+                     json={"order_id": order.id, "amount": str(total),
+                           "method": payment_method})
+
+        # 5. Kich hoat giao hang
+        requests.post(f"{SHIP_SERVICE_URL}/api/shipments/",
+                     json={"order_id": order.id,
+                           "address": shipping_address})
+
+        return Response(OrderSerializer(order).data,
+                       status=status.HTTP_201_CREATED)
+\end{lstlisting}
+
+\subsection{Recommender AI Service (Port 8011)}
+
+Recommender AI Service thực hiện gợi ý sách thông minh dựa trên đánh giá của người dùng.
+
+\subsubsection{Chiến Lược Gợi Ý}
+
+\begin{enumerate}[leftmargin=1.5cm]
+  \item Lấy danh sách sách được đánh giá cao nhất từ \texttt{comment-rate-service}
+  \item Lấy chi tiết từng cuốn sách qua \texttt{book-service}
+  \item Kết hợp thông tin sách + điểm đánh giá trung bình
+  \item \textbf{Fallback}: Nếu chưa có đánh giá nào, trả về 10 sách đầu tiên
+\end{enumerate}
+
+\subsubsection{Gợi Ý Cá Nhân Hóa}
+
+\begin{lstlisting}[language=Python, caption={Gợi ý sách cá nhân hóa theo customer\_id}]
+class RecommendForCustomer(APIView):
+    def get(self, request, customer_id):
+        # Lay tat ca danh gia
+        all_reviews = requests.get(
+            f"{COMMENT_RATE_SERVICE_URL}/api/reviews/").json()
+
+        # Loc ra sach ma khach hang da danh gia (loai bo chung)
+        customer_rated = {
+            rev["book_id"] for rev in all_reviews
+            if rev["customer_id"] == customer_id
+        }
+
+        # Lay sach top rating ma chua duoc danh gia boi customer
+        recommendations = []
+        for item in top_rated:
+            if item["book_id"] not in customer_rated:
+                book = requests.get(
+                    f"{BOOK_SERVICE_URL}/api/books/{item['book_id']}/"
+                ).json()
+                book["avg_rating"] = item["avg_rating"]
+                recommendations.append(book)
+
+        return Response({
+            "customer_id": customer_id,
+            "recommendations": recommendations[:5]
+        })
+\end{lstlisting}
+
+\subsection{API Gateway (Port 8000)}
+
+API Gateway đóng vai trò là \textbf{điểm vào duy nhất} (single entry point) cho toàn bộ hệ thống, cung cấp:
+
+\begin{itemize}[leftmargin=1.5cm]
+  \item \textbf{Web UI}: Giao diện HTML để tương tác với mọi chức năng
+  \item \textbf{Reverse Proxy}: Chuyển tiếp request tới services tương ứng
+  \item \textbf{Service Discovery}: Kết nối với tất cả 11 services khác
+\end{itemize}
+
+\subsubsection{Danh Sách Endpoints của API Gateway}
+
+\begin{table}[H]
+  \centering
+  \caption{URL routing trong API Gateway}
+  \begin{tabularx}{\textwidth}{lX}
+    \toprule
+    \textbf{URL Pattern} & \textbf{Chức Năng} \\
+    \midrule
+    \texttt{/}                              & Trang chủ (index) \\
+    \texttt{/books/}                        & Danh sách sách \\
+    \texttt{/books/add/}                    & Thêm sách (Staff) \\
+    \texttt{/customers/}                    & Danh sách khách hàng \\
+    \texttt{/customers/register/}           & Đăng ký khách hàng \\
+    \texttt{/customers/\{id\}/cart/}         & Giỏ hàng của khách \\
+    \texttt{/customers/\{id\}/cart/add/}    & Thêm sách vào giỏ \\
+    \texttt{/customers/\{id\}/order/}       & Tạo đơn hàng \\
+    \texttt{/orders/}                       & Lịch sử đơn hàng \\
+    \texttt{/books/\{id\}/reviews/}         & Đánh giá sách \\
+    \texttt{/books/\{id\}/reviews/add/}     & Thêm đánh giá \\
+    \texttt{/recommendations/}             & Gợi ý sách (AI) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% =============================================================
+\section{Yêu Cầu Chức Năng và Cài Đặt}
+% =============================================================
+
+\subsection{Use Cases Chính}
+
+\subsubsection{UC1: Đăng Ký Khách Hàng}
+
+\begin{tcolorbox}[servicebox, title={Use Case: Đăng Ký Khách Hàng}]
+  \textbf{Actor:} Khách hàng mới \\
+  \textbf{Mô tả:} Hệ thống tạo tài khoản khách hàng và tự động khởi tạo giỏ hàng \\[0.3cm]
+  \textbf{Luồng chính:}
+  \begin{enumerate}
+    \item Client gửi \texttt{POST /customers/register/} tới API Gateway
+    \item API Gateway gọi \texttt{POST /api/customers/} tới customer-service
+    \item customer-service lưu thông tin và gọi \texttt{POST /api/carts/} tới cart-service
+    \item cart-service tạo giỏ hàng mới với \texttt{customer\_id}
+    \item Trả về thông tin khách hàng mới tạo
+  \end{enumerate}
+\end{tcolorbox}
+
+\subsubsection{UC2: Nhân Viên Quản Lý Sách}
+
+\begin{tcolorbox}[servicebox, title={Use Case: Quản Lý Sách (Staff)}]
+  \textbf{Actor:} Nhân viên (Staff) \\
+  \textbf{Mô tả:} Nhân viên thực hiện CRUD sách thông qua book-service \\[0.3cm]
+  \textbf{Các thao tác:}
+  \begin{itemize}
+    \item \textbf{Thêm sách:} \texttt{POST /api/books/} với title, author, price, stock, isbn
+    \item \textbf{Xem sách:} \texttt{GET /api/books/} hoặc \texttt{GET /api/books/\{id\}/}
+    \item \textbf{Cập nhật:} \texttt{PUT /api/books/\{id\}/} với thông tin mới
+    \item \textbf{Xóa sách:} \texttt{DELETE /api/books/\{id\}/}
+  \end{itemize}
+\end{tcolorbox}
+
+\subsubsection{UC3: Đặt Hàng}
+
+\begin{tcolorbox}[servicebox, title={Use Case: Đặt Hàng}]
+  \textbf{Actor:} Khách hàng \\
+  \textbf{Tiền điều kiện:} Khách hàng đã đăng nhập và có items trong giỏ hàng \\[0.3cm]
+  \textbf{Luồng chính:}
+  \begin{enumerate}
+    \item Khách hàng submit form tạo đơn hàng (địa chỉ, phương thức thanh toán)
+    \item order-service lấy items từ cart-service và tính tổng tiền
+    \item Tạo bản ghi Order + OrderItems trong database
+    \item Gửi yêu cầu thanh toán tới pay-service (đồng bộ)
+    \item Gửi yêu cầu giao hàng tới ship-service (đồng bộ)
+    \item Trả về thông tin đơn hàng
+  \end{enumerate}
+\end{tcolorbox}
+
+\subsubsection{UC4: Gợi Ý Sách (AI Recommender)}
+
+\begin{tcolorbox}[servicebox, title={Use Case: Gợi Ý Sách}]
+  \textbf{Actor:} Khách hàng \\
+  \textbf{Mô tả:} Hệ thống gợi ý sách phù hợp dựa trên đánh giá cộng đồng \\[0.3cm]
+  \textbf{Chiến lược:}
+  \begin{itemize}
+    \item \textbf{Global:} Lấy top sách được đánh giá cao nhất từ tất cả người dùng
+    \item \textbf{Cá nhân hóa:} Lọc bỏ sách khách hàng đã đánh giá, gợi ý sách chưa đọc
+    \item \textbf{Fallback:} Nếu chưa có đánh giá, trả về 10 sách đầu tiên trong hệ thống
+  \end{itemize}
+\end{tcolorbox}
+
+% =============================================================
+\section{Kết Quả và Kiểm Thử}
+% =============================================================
+
+\subsection{Khởi Động Hệ Thống}
+
+Toàn bộ hệ thống được khởi động bằng một lệnh duy nhất:
+
+\begin{lstlisting}[language=bash, caption={Lện khởi động hệ thống}]
+# Khoi dong tat ca 12 services
+docker compose up --build
+
+# Kiem tra trang thai cac container
+docker compose ps
+
+# Xem log cua mot service cu the
+docker compose logs -f book-service
+\end{lstlisting}
+
+Sau khi các container khởi động thành công, có thể truy cập:
+\begin{itemize}[leftmargin=1.5cm]
+  \item \textbf{Web UI:} \url{http://localhost:8000}
+  \item \textbf{Book Service API:} \url{http://localhost:8005/api/books/}
+  \item \textbf{Customer Service API:} \url{http://localhost:8001/api/customers/}
+  \item \textbf{Recommender API:} \url{http://localhost:8011/api/recommendations/}
+\end{itemize}
+
+\subsection{Test Cases}
+
+\subsubsection{Kiểm Thử API Bằng curl/Postman}
+
+\begin{lstlisting}[language=bash, caption={Test API -- Tạo và lấy dữ liệu}]
+# 1. Dang ky khach hang moi
+curl -X POST http://localhost:8001/api/customers/ \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Nguyen Van A", "email": "nva@example.com"}'
+
+# 2. Them sach moi
+curl -X POST http://localhost:8005/api/books/ \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Clean Code", "author": "Robert Martin",
+       "price": 150000, "stock": 10}'
+
+# 3. Lay danh sach sach
+curl http://localhost:8005/api/books/
+
+# 4. Them sach vao gio hang (customer_id=1, cart_id=1)
+curl -X POST http://localhost:8006/api/cart-items/ \
+  -H "Content-Type: application/json" \
+  -d '{"cart": 1, "book_id": 1, "quantity": 2}'
+
+# 5. Tao don hang
+curl -X POST http://localhost:8007/api/orders/ \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id": 1, "shipping_address": "123 Le Loi",
+       "payment_method": "cash"}'
+
+# 6. Danh gia sach
+curl -X POST http://localhost:8010/api/reviews/ \
+  -H "Content-Type: application/json" \
+  -d '{"book_id": 1, "customer_id": 1,
+       "rating": 5, "comment": "Sach rat hay!"}'
+
+# 7. Lay goi y sach
+curl http://localhost:8011/api/recommendations/
+\end{lstlisting}
+
+\subsection{Xác Nhận Giao Tiếp Liên Dịch Vụ}
+
+Bảng sau xác nhận các luồng giao tiếp chính giữa services đã hoạt động đúng:
+
+\begin{table}[H]
+  \centering
+  \caption{Xác nhận giao tiếp giữa các services}
+  \begin{tabularx}{\textwidth}{lXl}
+    \toprule
+    \textbf{Kịch Bản} & \textbf{Mô Tả} & \textbf{Kết Quả} \\
+    \midrule
+    Đăng ký KH & customer-service $\to$ cart-service tự tạo giỏ hàng & \textcolor{successgreen}{\checkmark} \\
+    Thêm vào giỏ & cart-service xác thực sách qua book-service & \textcolor{successgreen}{\checkmark} \\
+    Đặt hàng & order-service lấy giỏ, tính tiền, gọi pay \& ship & \textcolor{successgreen}{\checkmark} \\
+    Gợi ý AI & recommender $\to$ comment-rate $\to$ book & \textcolor{successgreen}{\checkmark} \\
+    API Gateway & Định tuyến đúng tới từng service & \textcolor{successgreen}{\checkmark} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% =============================================================
+\section{Ưu Điểm và Hạn Chế}
+% =============================================================
+
+\subsection{Ưu Điểm Của Kiến Trúc Microservices}
+
+\begin{itemize}[leftmargin=1.5cm]
+  \item \textbf{Độc lập triển khai:} Mỗi service có thể được cập nhật, scale và deploy riêng biệt
+  \item \textbf{Cô lập lỗi:} Khi một service gặp sự cố, các service khác vẫn hoạt động bình thường (circuit breaker tự nhiên qua \texttt{try/except ConnectionError})
+  \item \textbf{Độc lập công nghệ:} Mỗi service có thể dùng ngôn ngữ/framework riêng (trong project này dùng Django đồng nhất)
+  \item \textbf{Scale riêng lẻ:} Book Service có thể chạy nhiều instance hơn Order Service nếu cần
+  \item \textbf{Cơ sở dữ liệu độc lập:} Mỗi service có SQLite riêng, tránh coupling ở tầng data
+\end{itemize}
+
+\subsection{Hạn Chế Hiện Tại}
+
+\begin{itemize}[leftmargin=1.5cm]
+  \item \textbf{Giao tiếp đồng bộ:} Sử dụng REST đồng bộ, nếu một service không phản hồi, order sẽ tạo thiếu thông tin
+  \item \textbf{Không có authentication:} Chưa có JWT hoặc OAuth để bảo mật API
+  \item \textbf{SQLite giới hạn:} SQLite không phù hợp môi trường production (nên dùng PostgreSQL)
+  \item \textbf{Không có load balancing:} Chỉ có một instance của mỗi service
+  \item \textbf{Thiếu health checks:} \texttt{depends\_on} trong Docker Compose không đảm bảo service đã sẵn sàng nhận request
+\end{itemize}
+
+\subsection{Hướng Phát Triển (Assignment 06)}
+
+Assignment 06 sẽ mở rộng hệ thống theo hướng:
+\begin{itemize}[leftmargin=1.5cm]
+  \item Thêm \textbf{Message Queue} (RabbitMQ/Kafka) cho giao tiếp bất đồng bộ
+  \item Tích hợp \textbf{Service Discovery} (Consul/Eureka) thay vì hardcode URL
+  \item Bổ sung \textbf{Authentication Service} với JWT
+  \item Chuyển sang \textbf{PostgreSQL} cho môi trường production
+  \item Thêm \textbf{Centralized Logging} và \textbf{Monitoring} (ELK Stack, Prometheus)
+\end{itemize}
+
+% =============================================================
+\section{Kết Luận}
+% =============================================================
+
+Assignment 05 đã được thực hiện thành công với việc phân rã hệ thống BookStore Monolithic thành \textbf{12 microservices độc lập}, mỗi service chịu trách nhiệm cho một miền nghiệp vụ cụ thể và hoạt động trong container Docker riêng biệt.
+
+\subsection{Tóm Tắt Thành Tích}
+
+\begin{itemize}[leftmargin=1.5cm]
+  \item \checkmark\ Thiết kế và cài đặt 12 microservices đầy đủ chức năng
+  \item \checkmark\ Cài đặt API Gateway với Web UI trực quan
+  \item \checkmark\ Cài đặt giao tiếp liên dịch vụ qua REST API
+  \item \checkmark\ Triển khai toàn bộ hệ thống bằng Docker Compose
+  \item \checkmark\ Cài đặt Recommender AI Service với chiến lược gợi ý thông minh
+  \item \checkmark\ Xử lý graceful failures trong giao tiếp giữa services
+\end{itemize}
+
+Dự án thể hiện sự hiểu biết về kiến trúc microservices, nguyên tắc \textit{Single Responsibility}, \textit{Loose Coupling} và \textit{High Cohesion} trong thiết kế phần mềm hiện đại.
+
+% =============================================================
+% REFERENCES
+% =============================================================
+\newpage
+\section*{Tài Liệu Tham Khảo}
+\addcontentsline{toc}{section}{Tài Liệu Tham Khảo}
+
+\begin{enumerate}
+  \item Django REST Framework Documentation. \url{https://www.django-rest-framework.org/}
+  \item Docker Compose Documentation. \url{https://docs.docker.com/compose/}
+  \item Martin Fowler. \textit{Microservices}. \url{https://martinfowler.com/articles/microservices.html}
+  \item Sam Newman. \textit{Building Microservices}. O'Reilly Media, 2021.
+  \item Tutorial Assignment 05 \& 06 -- SA\&D 2026 Course Material.
+\end{enumerate}
+
+\end{document}
